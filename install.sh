@@ -26,11 +26,11 @@ SMB_USER="${SMB_USER:-}"
 echo "==> 賦予腳本執行權限"
 chmod +x "${SCRIPT_DIR}"/*.sh
 
-echo "==> 檢查 Keychain 是否已存入憑證（${SMB_SERVER} / ${SMB_USER}）"
+echo "==> 檢查鑰匙圈是否已存入憑證（${SMB_SERVER} / ${SMB_USER}）"
 if ! security find-internet-password -s "${SMB_SERVER}" -a "${SMB_USER}" >/dev/null 2>&1; then
-    echo "    ⚠️  尚未在 Keychain 找到憑證。"
+    echo "    ⚠️  尚未在鑰匙圈找到憑證。"
     echo "    請先執行： ${SCRIPT_DIR}/save-credential.sh"
-    echo "    （沒有憑證的話，常駐掛載會失敗）"
+    echo "    （並在 Finder 視窗勾選「記住密碼到鑰匙圈」，否則常駐掛載會失敗）"
 fi
 
 echo "==> 動態產生 LaunchAgent -> ${PLIST_DST}"
@@ -75,5 +75,5 @@ launchctl kickstart -k "gui/$(id -u)/${AGENT_LABEL}"
 
 echo
 echo "完成！排程已啟用（每 60 秒檢查、登入時自動掛載）。"
-echo "掛載點： ${HOME}/${MOUNT_SUBDIR:-mnt/smb-home}"
+echo "掛載點： /Volumes/${SMB_SHARE:-home}"
 echo "日誌：   ${HOME}/Library/Logs/keep-smb-online.log"

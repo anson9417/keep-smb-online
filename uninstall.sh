@@ -12,7 +12,7 @@ if [ -f "${SCRIPT_DIR}/config.env" ]; then
     # shellcheck source=/dev/null
     source "${SCRIPT_DIR}/config.env"
 fi
-MOUNTPOINT="${HOME}/${MOUNT_SUBDIR:-mnt/smb-home}"
+MOUNTPOINT="/Volumes/${SMB_SHARE:-home}"
 
 echo "==> 卸載 LaunchAgent"
 launchctl bootout "gui/$(id -u)/${AGENT_LABEL}" 2>/dev/null || true
