@@ -5,6 +5,20 @@
 格式依循 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.1.0/)，
 版本號採用 [語意化版本](https://semver.org/lang/zh-TW/)。
 
+## [2.1.0] - 2026-07-20
+
+### Changed
+- 掛載機制改用 AppleScript `mount volume`（走 NetAuth）取代 `mount_smbfs -N`。
+  實測發現現代 macOS 的 `mount_smbfs` 不讀鑰匙圈，改走 NetAuth 才能自動取用憑證。
+- 憑證建立改由 `save-credential.sh` 開啟 Finder 連線、勾選「記住密碼到鑰匙圈」（NetAuth 原生項目、無明文）。
+- 掛載點改為系統慣例的 `/Volumes/<分享名稱>`。
+
+### Added
+- 憑證閘門：鑰匙圈無憑證時略過掛載，避免每 60 秒跳出互動密碼框。
+
+### Removed
+- `config.env` 移除已棄用的 `MOUNT_SUBDIR`（掛載點改由系統決定）。
+
 ## [2.0.0] - 2026-07-20
 
 ### Changed
