@@ -32,13 +32,35 @@ SMB_USER="${SMB_USER:-}"
 SMB_URL="smb://${SMB_USER}@${SMB_SERVER}/${SMB_SHARE}"
 
 LOG_FILE="${HOME}/Library/Logs/keep-smb-online.log"
+LOG_MAX_BYTES="${LOG_MAX_BYTES:-524288}"   # 超過 512KB 就修剪
+LOG_KEEP_LINES="${LOG_KEEP_LINES:-200}"    # 修剪後保留的行數
 # ----------------------------------------------------------------------------
 
-log() {
-    printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >>"${LOG_FILE}"
+mkdir -p "$(dirname "${LOG_FILE}")"
+
+# log 超過上限時，只保留最後 N 行，避免無限成長
+rotate_log() {
+    [ -f "${LOG_FILE}" ] || return 0
+    local size
+    size="$(stat -f%z "${LOG_FILE}" 2>/dev/null || echo 0)"
+    if [ "${size}" -gt "${LOG_MAX_BYTES}" ]; then
+        tail -n "${LOG_KEEP_LINES}" "${LOG_FILE}" >"${LOG_FILE}.tmp" 2>/dev/null \
+            && mv "${LOG_FILE}.tmp" "${LOG_FILE}"
+    fi
 }
 
-mkdir -p "$(dirname "${LOG_FILE}")"
+# 與上一則內容完全相同時不重複寫（同一狀態只留一行，不會每分鐘刷）
+log() {
+    local msg="$*"
+    if [ -f "${LOG_FILE}" ]; then
+        local last
+        last="$(tail -n 1 "${LOG_FILE}" 2>/dev/null | sed 's/^[0-9-]* [0-9:]* //')"
+        [ "${last}" = "${msg}" ] && return 0
+    fi
+    printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "${msg}" >>"${LOG_FILE}"
+}
+
+rotate_log
 
 if [ -z "${SMB_SERVER}" ]; then
     log "未設定 SMB_SERVER（請複製 config.env.example 為 config.env 並填入）"

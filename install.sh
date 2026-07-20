@@ -51,10 +51,11 @@ cat >"${PLIST_DST}" <<PLIST
     <true/>
     <key>StartInterval</key>
     <integer>60</integer>
+    <!-- 腳本已自帶輪替式 log；stdout/stderr 導向 /dev/null 避免另外累積檔案 -->
     <key>StandardOutPath</key>
-    <string>${HOME}/Library/Logs/keep-smb-online.out.log</string>
+    <string>/dev/null</string>
     <key>StandardErrorPath</key>
-    <string>${HOME}/Library/Logs/keep-smb-online.err.log</string>
+    <string>/dev/null</string>
     <key>ProcessType</key>
     <string>Background</string>
 </dict>
