@@ -1,0 +1,8 @@
+# 現場設定（含站點資訊，不進版控）
+config.env
+
+# 日誌
+*.log
+
+# macOS
+.DS_Store
