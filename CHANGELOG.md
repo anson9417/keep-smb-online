@@ -5,6 +5,21 @@
 格式依循 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.1.0/)，
 版本號採用 [語意化版本](https://semver.org/lang/zh-TW/)。
 
+## [3.0.0] - 2026-11-02
+
+### Added
+- 頂端列 App `KeepSMBOnline.app`（仿 Caffeine）：左鍵點擊開/關常駐掛載，右鍵選單提供狀態、重新掛載、在 Finder 開啟、記住密碼、設定、登入時啟動、查看 log。
+- App 內建每 60 秒檢查與自動重連，並在系統喚醒、網路變為可用時立即檢查；以「登入時啟動」（`SMAppService`）取代 LaunchAgent。
+- App 內設定視窗；首次啟動未設定時自動開啟。
+- `build-app.sh`：只用 Command Line Tools 建置 `.app` 並 ad-hoc 簽章；`--install` 安裝到 `~/Applications`，`--uninstall` 移除 App、登入項目與偏好設定。
+
+### Changed
+- 關閉時改為一般卸載、不強制；有檔案使用中時保留掛載並提示。
+
+### Removed
+- 移除 shell 腳本與 LaunchAgent：`keep-smb-online.sh`、`install.sh`、`save-credential.sh`、`uninstall.sh`（功能已由 App 取代；升級步驟見 README）。
+- 移除 `config.env` / `config.env.example`，設定改存於 App 偏好設定。
+
 ## [2.1.0] - 2026-07-20
 
 ### Changed
